@@ -1,29 +1,44 @@
 package main
 
 import (
-	"image"
-	"image/color"
-
-	"github.com/llgcode/draw2d/draw2dimg"
+	"fmt"
+	"html/template"
+	"log"
+	"net/http"
+	"os"
+	"os/exec"
 )
+type data struct {
+	Kitten string
+}
+type User struct {
+    Name       string
+    Occupation string
+}
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+	os.Remove("img.png")
+	exec.Command("go","run", "./draw/draw.go").Run()
+    // buf, err := os.ReadFile("img.png")
+
+    // if err != nil {
+        // return
+    // }
+	// title := r.URL.Path[len("/"):]
+	p := data{"meow:3"}
+    t, err := template.ParseFiles("static/main.tmpl")
+	if err != nil{
+		log.Fatal(err)
+	}
+    t.Execute(w, p)
+}
+
+
 
 func main() {
-	// Initialize the graphic context on an RGBA image
-	dest := image.NewRGBA(image.Rect(0, 0, 297, 210.0))
-	gc := draw2dimg.NewGraphicContext(dest)
-
-	// Set some properties
-	gc.SetFillColor(color.RGBA{0x44, 0xff, 0x44, 0xff})
-	gc.SetStrokeColor(color.RGBA{0x44, 0x44, 0x44, 0xff})
-	gc.SetLineWidth(5)
-
-	// Draw a closed shape
-	gc.MoveTo(10, 10) // should always be called first for a new path
-	gc.LineTo(100, 50)
-	gc.QuadCurveTo(100, 10, 10, 10)
-	gc.Close()
-	gc.FillStroke()
-
-	// Save to file
-	draw2dimg.SaveToPngFile("hello.png", dest)
+	
+	http.HandleFunc("/",handleRequest)
+	fs := http.FileServer(http.Dir("./dynamic"))
+	http.Handle("/dynamic/", http.StripPrefix("/dynamic/", fs)) 
+    fmt.Println("http://127.0.0.1:8080")
+    http.ListenAndServe("127.0.0.1:8080", nil)
 }
