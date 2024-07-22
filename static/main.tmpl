@@ -19,6 +19,8 @@ body {
 window.onscroll = function () { window.scrollTo(0, 0); }; // disable scrolling
 async function lock() {
   try {
+
+
     
     var img = document.getElementById('img');
     const response = await fetch('lock');
@@ -39,9 +41,13 @@ async function lock() {
         document.getElementById("Error").style.display = 'none';
     }
     img.src = 'dynamic/img.png?rand=' + Math.random(); //rand to prevent caching
-    console.log("d")
+    console.log(new Date())
   } catch (err) {
     console.log(err);
+  }
+  finally{
+    setTimeout(lock,1)
+  
   }
 }
 document.addEventListener("visibilitychange", (event) => {
@@ -51,10 +57,9 @@ document.addEventListener("visibilitychange", (event) => {
     // console.log("tab is inactive")
   }
 });
-    setInterval(function() {
+
     lock()
-    
-    }, 500);
+
     
         </script>
         
