@@ -1,49 +1,19 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"os"
-	"os/exec"
-	"strings"
 )
 
-func get_data() ([]byte, error) {
+func render(){
 	step()
-	jsonData, err := json.Marshal(fb)
-	return jsonData, err
-}
-
-func render() error { //generate .png
-	j, err := get_data()
-	err2 := os.WriteFile("/tmp/goipc.json", j, 0644) //state of the art ipc
-	if err != nil {
-		log.Fatal(err)
-	} else if err2 != nil {
-		log.Fatal(err2)
-	}
-	os.Remove("img.png")
-	cmd := exec.Command("python3", "draw.py")
-	cmd.Dir = "./draw"
-
-	if out, err := cmd.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	return nil
+	fb.SavePNG("dynamic/img.png")
 }
 
 func lock(w http.ResponseWriter, r *http.Request) {
-	err := render()
-
-	if err != nil {
-		http.Error(w, strings.Replace(
-			err.Error(), "\n", "<br>", -1)+err.Error(), 500)
-		return
-	}
+	render()
 	w.WriteHeader(http.StatusOK)
 }
 func handleRequest(w http.ResponseWriter, r *http.Request) {

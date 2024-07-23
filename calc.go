@@ -2,13 +2,15 @@ package main
 
 import (
 	"math"
+
+	"git.sr.ht/~sbinet/gg"
 )
 
 
 var G = 9.8
 var time_step = 0.22
 var objects = make([]*object, 0)
-var fb = [512][512]uint8{}
+var fb = gg.NewContext(512, 512)
 
 type data struct{
 
@@ -43,13 +45,13 @@ func (obj *object) update() { //do physics
 	obj.y_speed = obj.y_speed + obj.y_acceleration*time_step
 }
 
-func (obj object) draw(frame *[512][512]uint8) {//draw an object
+func (obj object) draw(frame *gg.Context) {//draw an object
 	for c_x := int(obj.x); c_x <= int(obj.x)+int(obj.size); c_x++ {
 		for c_y := int(obj.y); c_y <= int(obj.y)+int(obj.size); c_y++ {
 			if !inRange(c_y,0,512) || !inRange(c_x,0,512){
 				return
 			}
-			frame[c_y][c_x] = 200
+			frame.SetPixel(c_y,c_x)
 
 		}
 	}
@@ -59,13 +61,15 @@ func (obj object) draw(frame *[512][512]uint8) {//draw an object
 
 func step() { //self explanatory 
 	for _, obj := range objects {
-		fb = [512][512]uint8{}
+		fb.SetHexColor("#023e49")
+		fb.Clear()
+		fb.SetHexColor("#ffff00")
 		obj.update()
 		if !inRange(int(obj.y),0,512) || !inRange(int(obj.x),0,512){
 			*obj.enabled=false
 		}
 		if *obj.enabled {
-			obj.draw(&fb)
+			obj.draw(fb)
 		}
 	}
 }
