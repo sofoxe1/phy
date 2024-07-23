@@ -59,9 +59,12 @@ func (obj object) draw(frame *[512][512]uint8) {//draw an object
 
 func step() { //self explanatory 
 	for _, obj := range objects {
+		fb = [512][512]uint8{}
+		obj.update()
+		if !inRange(int(obj.y),0,512) || !inRange(int(obj.x),0,512){
+			*obj.enabled=false
+		}
 		if *obj.enabled {
-			fb = [512][512]uint8{}
-			obj.update()
 			obj.draw(&fb)
 		}
 	}
