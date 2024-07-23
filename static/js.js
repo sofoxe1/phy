@@ -25,7 +25,7 @@ async function lock() {
         console.log(err);
     }
     finally {
-        setTimeout(lock, 1)
+        setTimeout(lock, 20)
 
     }
 }

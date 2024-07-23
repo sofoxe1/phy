@@ -8,7 +8,7 @@ import (
 
 
 var G = 9.8
-var time_step = 0.22
+var time_step = 0.01
 var objects = make([]*object, 0)
 var fb = gg.NewContext(512, 512)
 
@@ -40,7 +40,7 @@ func (obj object) Initialize() *object {
 
 func (obj *object) update() { //do physics
 	obj.x = obj.x + obj.x_speed*time_step + (obj.x_acceleration*math.Pow(time_step, 2))/2
-	obj.y = obj.y - obj.y_speed*time_step + (obj.y_acceleration*math.Pow(time_step, 2))/2
+	obj.y = obj.y + obj.y_speed*time_step + (obj.y_acceleration*math.Pow(time_step, 2))/2
 	obj.x_speed = obj.x_speed + obj.x_acceleration*time_step
 	obj.y_speed = obj.y_speed + obj.y_acceleration*time_step
 }
@@ -51,7 +51,7 @@ func (obj object) draw(frame *gg.Context) {//draw an object
 			if !inRange(c_y,0,512) || !inRange(c_x,0,512){
 				return
 			}
-			frame.SetPixel(c_y,c_x)
+			frame.SetPixel(c_x,c_y)
 
 		}
 	}

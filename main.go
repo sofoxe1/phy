@@ -26,7 +26,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	objects = append(objects, object{x: 0, y: 400, y_acceleration: G}.Initialize())
+	objects = append(objects, object{x: 120, y: 0, y_acceleration: G}.Initialize())
 	fs := http.FileServer(http.Dir("./dynamic"))
 	http.Handle("/dynamic/", http.StripPrefix("/dynamic/", fs))
 	fs2 := http.FileServer(http.Dir("./static"))
