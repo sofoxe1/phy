@@ -8,9 +8,9 @@ import (
 
 
 var G = 9.8
-var time_step = 0.01
+var time_step = 0.02
 var objects = make([]*object, 0)
-var fb = gg.NewContext(512, 512)
+
 
 type data struct{
 
@@ -48,7 +48,7 @@ func (obj *object) update() { //do physics
 func (obj object) draw(frame *gg.Context) {//draw an object
 	for c_x := int(obj.x); c_x <= int(obj.x)+int(obj.size); c_x++ {
 		for c_y := int(obj.y); c_y <= int(obj.y)+int(obj.size); c_y++ {
-			if !inRange(c_y,0,512) || !inRange(c_x,0,512){
+			if !insideScreen(c_x,c_y){
 				return
 			}
 			frame.SetPixel(c_x,c_y)
@@ -60,15 +60,15 @@ func (obj object) draw(frame *gg.Context) {//draw an object
 
 
 func step() { //self explanatory 
+	fb.SetHexColor("#023e49")
+	fb.Clear()
+	fb.SetHexColor("#ffff00")
 	for _, obj := range objects {
-		fb.SetHexColor("#023e49")
-		fb.Clear()
-		fb.SetHexColor("#ffff00")
-		obj.update()
-		if !inRange(int(obj.y),0,512) || !inRange(int(obj.x),0,512){
+		if !insideScreen(int(obj.x),int(obj.y)){
 			*obj.enabled=false
 		}
 		if *obj.enabled {
+			obj.update()
 			obj.draw(fb)
 		}
 	}
