@@ -46,6 +46,9 @@ func (obj *object) update() { //do physics
 func (obj object) draw(frame *[512][512]uint8) {//draw an object
 	for c_x := int(obj.x); c_x <= int(obj.x)+int(obj.size); c_x++ {
 		for c_y := int(obj.y); c_y <= int(obj.y)+int(obj.size); c_y++ {
+			if !inRange(c_y,0,512) || !inRange(c_x,0,512){
+				return
+			}
 			frame[c_y][c_x] = 200
 
 		}
