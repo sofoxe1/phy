@@ -1,7 +1,7 @@
 
 window.onscroll = function () { window.scrollTo(0, 0); }; // disable scrolling
 
-async function show_error(response){
+async function show_error(response) {
     if (response.status == 500) {
         response.text().then(function (text) {
 
@@ -11,21 +11,21 @@ async function show_error(response){
 
             throw new Error(text)
         });
-}
+    }
 }
 
 
-async function update_parameters(){
+async function update_parameters() {
     await fetch('config', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
-            "Width":window.innerWidth,
-            "Height":window.innerHeight
+        body: JSON.stringify({
+            "Width": window.innerWidth,
+            "Height": window.innerHeight
 
-         })
+        })
     }).then((response) => response.json())
         .then((json) => console.log(json));
     await show_error(response)
@@ -33,7 +33,7 @@ async function update_parameters(){
 
 async function lock() {
     try {
-        
+
         var img = document.getElementById('img');
         const response = await fetch('lock');
         await show_error(response)

@@ -13,11 +13,13 @@ import (
 var fb = gg.NewContext(512, 512)
 var fb_y = 512
 var fb_x = 512
+
 type _fb struct {
-	Width int
+	Width  int
 	Height int
-  }
-func render(){
+}
+
+func render() {
 	step()
 	fb.SavePNG("dynamic/img.png")
 }
@@ -31,15 +33,13 @@ func config(w http.ResponseWriter, r *http.Request) {
 	var data _fb
 	json.NewDecoder(r.Body).Decode(&data)
 	w.WriteHeader(http.StatusOK)
-	fb_x=data.Width-25
-	fb_y=data.Height-25 //for some reason actual size is slightly smaller
-	if fb_x<100 || fb_y<100{
+	fb_x = data.Width - 25
+	fb_y = data.Height - 25 //for some reason actual size is slightly smaller
+	if fb_x < 100 || fb_y < 100 {
 		panic("screen too small")
 	}
-	fb=gg.NewContext(fb_x, fb_y)
+	fb = gg.NewContext(fb_x, fb_y)
 	fmt.Println(fb_x)
-
-
 
 }
 func handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -54,8 +54,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 func main() {
 	objects = append(objects, object{x: 120, y: 0, y_acceleration: G}.Initialize())
 	// objects = append(objects, object{x: 120, y: 100,color: "rand"}.Initialize())
-	for i:=0; i<=10; i++{
-		objects = append(objects, object{x: 120, y: 40+float64(i*16),color: "rand"}.Initialize())
+	for i := 0; i <= 10; i++ {
+		objects = append(objects, object{x: 120, y: 40 + float64(i*16), color: "rand"}.Initialize())
 	}
 
 	fs := http.FileServer(http.Dir("./dynamic"))
@@ -69,5 +69,4 @@ func main() {
 	fmt.Println("http://127.0.0.1:8080")
 	http.ListenAndServe("127.0.0.1:8080", nil)
 
-	
 }
