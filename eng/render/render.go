@@ -29,8 +29,8 @@ func (r *Renderer) Render(objects []*calc.Object) {
 
 			for _, obj := range objects {
 				fb.SetHexColor(obj.Color)
-				for c_x := int(obj.X) - int(obj.Size)/2; c_x <= int(obj.X)+int(obj.Size)/2; c_x++ {
-					for c_y := int(obj.Y) - int(obj.Size)/2; c_y <= int(obj.Y)+int(obj.Size)/2; c_y++ {
+				for c_x := int(obj.X) - int(obj.Size)/2+1; c_x <= int(obj.X)+int(obj.Size)/2; c_x++ {
+					for c_y := int(obj.Y) - int(obj.Size)/2+1; c_y <= int(obj.Y)+int(obj.Size)/2; c_y++ {
 						if !util.InsideScreen(c_x, c_y, r.Width, r.Height) {
 							continue
 						}
