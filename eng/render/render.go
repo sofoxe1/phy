@@ -18,10 +18,12 @@ func (r *Renderer) Render(objects []*calc.Object) {
 	var draw func()
 	f,_:=os.OpenFile(r.Img_path,os.O_CREATE,0777)
 	f.Sync()
+	
 	if r.Backend == "png" || r.Backend == "jpg" || r.Backend == "web" {
 		draw = func() {
-			fb := gg.NewContext(r.Width, r.Height)
+			
 			for {
+				fb := gg.NewContext(r.Width, r.Height)
 				time.Sleep(time.Second / time.Duration(r.Fps))
 				fb.SetHexColor(r.background_color)
 				fb.Clear()
@@ -71,7 +73,6 @@ func (r *Renderer) Render(objects []*calc.Object) {
 				if r.Width < 100 || r.Height < 100 {
 					panic("screen too small")
 				}
-				w.WriteHeader(http.StatusOK)
 			})
 		fmt.Println("http://127.0.0.1:8080")
 		go http.ListenAndServe("127.0.0.1:8080", nil)

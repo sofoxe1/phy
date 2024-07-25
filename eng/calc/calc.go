@@ -105,7 +105,7 @@ func (obj *Object) update(time_step float64,fbx int, fby int, objects []*Object)
 	}
 	collisions= make([]int,1)
 	}
-	if !util.InsideScreen (int(obj.X)+int(obj.Size), int(obj.Y)+int(obj.Size),fbx,fby) || !util.InsideScreen(int(obj.X),int(obj.Y),fbx,fby){
+	if !util.InsideScreen (int(obj.X)+int(obj.Size)/2, int(obj.Y)+int(obj.Size)/2,fbx,fby) || !util.InsideScreen(int(obj.X)-int(obj.Size)/2,int(obj.Y)-int(obj.Size)/2,fbx,fby){
 		obj.bounce()
 	}
 
