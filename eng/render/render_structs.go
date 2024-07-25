@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+
+
+
 type json_screen_size struct{
 	Width  int
 	Height int
@@ -19,7 +22,7 @@ type Renderer struct{
 	background_color string
 	Fps int
 }
-func (r *Renderer) Initialize() error{
+func (r Renderer) Initialize() (error, *Renderer){
 	backends:= []string{"png","jpg","web"}
 	if r.background_color==""{
 		r.background_color="#023e49"
@@ -28,15 +31,15 @@ func (r *Renderer) Initialize() error{
 		r.Fps=60
 	}
 	if r.Width == 0 || r.Height == 0{
-		return errors.New("screen size not set")
+		return errors.New("screen size not set"),nil
 	}
 
 	if !slices.Contains(backends,r.Backend){
-		return errors.New("possible backends are:"+":"+strings.Join(backends, ","))
+		return errors.New("possible backends are:"+":"+strings.Join(backends, ",")),nil
 	}
 	if (r.Backend=="png"||r.Backend =="jpg") && r.Img_path == "" {
-		return errors.New("file path not set")
+		return errors.New("file path not set"),nil
 	}
 
-	return nil
+	return nil,&r
 }

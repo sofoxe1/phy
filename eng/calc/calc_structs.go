@@ -1,9 +1,8 @@
 package calc
 
 import (
+	"eng/util"
 	"math/rand"
-
-	"../util"
 )
 
 type Object struct{
@@ -11,10 +10,10 @@ type Object struct{
 	Size           float64
 	X              float64
 	Y              float64
-	X_speed        float64
-	Y_speed        float64
-	X_acceleration float64
-	Y_acceleration float64
+	Xs        float64  //x_speed
+	Ys        float64
+	Xa float64			//x_acceleration
+	Ya float64
 	render        *bool
 	Mass           float64
 	Color          string

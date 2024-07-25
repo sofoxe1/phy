@@ -1,14 +1,26 @@
-// package main
+package main
 
-// import (
-// 	"eng/calc"
-// 	"eng/render"
-// )
+import (
+	"eng/calc"
+	"eng/render"
+	"log"
+	"time"
+)
 
-//  func main(){
-// 	r:=render.Renderer{Backend:"web",Img_path:"/tmp/im.png",Width: 1920, Height: 1080}
-// 	var objects []*calc.Object
-// 	objects = append(objects, calc.Object{X: 100, Y: 122,Color: "rand"}.Initialize())
-// 	r.Render(objects)
+ func main(){
+	err,r:=render.Renderer{Backend:"web",Img_path:"/tmp/im.png",Width: 1920, Height: 1080}.Initialize()
+	if err!=nil{
+		log.Fatal(err)
+	}
+		var objects []*calc.Object
+		objects = append(objects, calc.Object{X: 100, Y: 122,Color: "rand",Xa:2.2}.Initialize())
+		go r.Render(objects)
+		var tick_rate float64 =60*8
+		var speed float64 = 8
+		for {
+			time.Sleep(time.Second/time.Duration(tick_rate))
+			calc.Step(speed/tick_rate,objects,r.Width,r.Height)
+		} 
+		
 	
-//  }
+ }

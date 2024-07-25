@@ -35,13 +35,12 @@ async function update() {
     try {
 
         var img = document.getElementById('img');
-        await show_error(response)
-        img.src = 'img?rand=' + Math.random(); //rand to prevent caching
+        img.src = '/img.png?rand=' + Math.random(); //rand to prevent caching
     } catch (err) {
         console.log(err);
     }
     finally {
-        setTimeout(lock, 30)
+        setTimeout(update, 30)
 
     }
 }

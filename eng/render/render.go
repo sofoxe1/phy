@@ -7,24 +7,31 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
+	"render/static"
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
 )
 
 func (r *Renderer) Render(objects []*calc.Object) {
+	
 	var draw func()
-
+	f,_:=os.OpenFile(r.Img_path,os.O_CREATE,0777)
+	f.Sync()
 	if r.Backend == "png" || r.Backend == "jpg" || r.Backend == "web" {
 		draw = func() {
 			fb := gg.NewContext(r.Width, r.Height)
+			for {
+				time.Sleep(time.Second / time.Duration(r.Fps))
+				fb.SetHexColor(r.background_color)
+				fb.Clear()
+			
 
 			for _, obj := range objects {
 				fb.SetHexColor(obj.Color)
 				for c_x := int(obj.X) - int(obj.Size)/2; c_x <= int(obj.X)+int(obj.Size)/2; c_x++ {
 					for c_y := int(obj.Y) - int(obj.Size)/2; c_y <= int(obj.Y)+int(obj.Size)/2; c_y++ {
-						if util.InsideScreen(c_x, c_y, r.Width, r.Height) {
+						if !util.InsideScreen(c_x, c_y, r.Width, r.Height) {
 							continue
 						}
 						fb.SetPixel(c_x, c_y)
@@ -32,24 +39,27 @@ func (r *Renderer) Render(objects []*calc.Object) {
 					}
 				}
 			}
-			fb.SetHexColor(r.background_color)
-			fb.SavePNG(r.Img_path)
+			
+			// wasted over an hour to realize gg.context.SavePng doesn't call Sync which results in no or garbage data being written...
+			f,err:=os.OpenFile(r.Img_path,os.O_WRONLY,0777)
+			err= fb.EncodePNG(f)
+			f.Sync()
+			if err!= nil{
+				panic(err)
+			}
 		}
 	}
+	}
 	if r.Backend == "web" {
-		ex, err := os.Executable()
-		if err != nil {
-			panic(err)
-		}
-		exPath := filepath.Dir(ex)
-		http.HandleFunc("/img", func(w http.ResponseWriter, req *http.Request) {
+		http.HandleFunc("/img.png", func(w http.ResponseWriter, req *http.Request) {
 			http.ServeFile(w, req, r.Img_path)
 		})
-		fs := http.FileServer(http.Dir(filepath.Join(exPath,"./static")))
-		http.Handle("/static/", http.StripPrefix("/static/", fs))
+		http.HandleFunc("/static/js.js", func(w http.ResponseWriter, req *http.Request) {
+			w.Write(static.Js)
+		})
 
-		http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-			http.ServeFile(w, req, filepath.Join(exPath,"./static/main.html"))
+		http.HandleFunc("/main.html", func(w http.ResponseWriter, req *http.Request) {
+			w.Write(static.MainHtml)
 		})
 		http.HandleFunc("/config",
 			func(w http.ResponseWriter, req *http.Request) {
@@ -61,14 +71,13 @@ func (r *Renderer) Render(objects []*calc.Object) {
 				if r.Width < 100 || r.Height < 100 {
 					panic("screen too small")
 				}
+				w.WriteHeader(http.StatusOK)
 			})
 		fmt.Println("http://127.0.0.1:8080")
-		http.ListenAndServe("127.0.0.1:8080", nil)
+		go http.ListenAndServe("127.0.0.1:8080", nil)
 	}
 
-	for {
-		time.Sleep(time.Second / time.Duration(r.Fps))
+	
 		draw()
-	}
 
 }
