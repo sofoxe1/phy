@@ -13,8 +13,9 @@ import (
 		log.Fatal(err)
 	}
 		var objects []*calc.Object
-		objects = append(objects, calc.Object{X: 100, Y: 133,Color: "rand",Xa:2.2,Ya:8.4}.Initialize())
-		objects = append(objects, calc.Object{X: 120, Y: 133,Color: "rand"}.Initialize())
+		objects = append(objects, calc.Object{X: 100, Y: 80,Xs:2.2,Ys:2.2,  Color: "rand"}.Initialize())
+		objects = append(objects, calc.Object{X: 142, Y: 124,Xs:-2.2,Ys:-2.2,  Color: "rand"}.Initialize())
+		objects = append(objects, calc.Object{X: 123, Y: 110,Color: "rand"}.Initialize())
 		go r.Render(objects)
 		var tick_rate float64 =60*8
 		var speed float64 = 2

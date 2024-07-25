@@ -26,7 +26,7 @@ func checkCollisions(obj1 Object, objects []*Object) (*Object) {
 		if obj1 == *obj2 {
 			continue
 		}
-		if obj1.X+obj1.Size>=obj2.X && obj1.X<=obj2.X+obj2.Size && obj1.Y>=obj2.Y-obj2.Size && obj1.Y<=obj2.Y+obj2.Size {
+		if obj1.X+obj1.Size>obj2.X && obj1.X<obj2.X+obj2.Size && obj1.Y>obj2.Y-obj2.Size && obj1.Y<obj2.Y+obj2.Size {
 			return obj2
 		}
 
@@ -62,35 +62,36 @@ func (obj *Object) update(time_step float64,fbx int, fby int, objects []*Object)
 	obj.Y = obj.Y+((obj_c.Ys+obj.Ys)*time_step)/2
 	if obj.X != obj_c.X || obj.Y!= obj_c.Y{
 		if obj2:= checkCollisions(*obj, objects); obj2!=nil{
-			obj.stop()
-		// obj=obj_c
+			obj.Color=util.RndColor()
+			fmt.Println(obj	)
 		x_travel:=obj.X-obj_c.X
 		y_travel:=obj.Y-obj_c.Y
 		path:= math.Sqrt(math.Pow(x_travel,2)+math.Pow(y_travel,2))
 		x_ratio:=path/x_travel
 		y_ratio:=path/y_travel
-		fmt.Println(x_ratio)
-		fmt.Println(y_ratio)
-		// obj.X=obj2.X-obj2.Size
-		d:=((obj2.X-obj2.Size)-obj.X)/x_ratio
-		obj.X+=d
-		fmt.Println(d)
-		obj.Y+=(d/y_ratio)
-		// obj.X=obj2.X+(16*x_ratio)
-		fmt.Println(obj.Y)
-		// obj.X=obj2.X+(16/x_ratio)
-		// panic("a")
-		// obj.stop()
-		// time.Sleep(time.Second*10000)
-
-		//  ty kurawa org-c = przemeieszczenie, chieć by to równać obj2+half size (krawendz)
-		fmt.Println(obj	)
-		fmt.Println(obj2)
+		var dx, dy float64
+		if x_travel<0{
+			 dx=-obj.X+obj2.X+obj2.Size
+		}else{
+			dx=-obj.X+obj2.X-obj.Size
+		} 
+		if y_travel<0{
+			dy=-obj.Y+obj2.Y+obj2.Size
+		}else{
+			dy=-obj.Y+obj2.Y-obj2.Size
+		}
+		if math.Abs(dx)<math.Abs(dy){
+			fmt.Println("a")
+			obj.X+=dx
+			obj.Y+=(dx*x_ratio)/y_ratio
+		} else{
+			obj.X+=(dy*y_ratio)/x_ratio
+			obj.Y+=dy
+		}
+		obj.stop()
 		if x_travel>0{
 			tx:= 2*x_travel/(obj_c.Xs+obj.Xs)
 			ty:= 2*y_travel/(obj_c.Ys+obj.Ys)
-			fmt.Println(tx)
-			fmt.Println(ty)
 			if ty!=tx{
 				panic("math is not mathing")
 			}
