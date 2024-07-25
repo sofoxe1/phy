@@ -12,6 +12,8 @@ func colide(obj1 *Object, obj2 *Object) {
 		obj1.Xs, obj2.Xs = obj2.Xs, obj1.Xs
 		obj1.Ys, obj2.Ys = obj2.Ys, obj1.Ys
 		return
+	}else{
+		panic("author can't be bothered to debug collisions when masses are not equal")
 	}
 	m_sum := obj1.Mass + obj2.Mass
 	obj1.Xs = ((obj1.Mass-obj2.Mass)/(m_sum))*obj1.Xs + ((2*obj2.Mass)/(m_sum))*obj2.Xs
