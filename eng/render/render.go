@@ -74,7 +74,7 @@ func (r *Renderer) Render(objects []*calc.Object) {
 					panic("screen too small")
 				}
 			})
-		fmt.Println("http://127.0.0.1:8080")
+		fmt.Println("http://127.0.0.1:8080/main.html")
 		go http.ListenAndServe("127.0.0.1:8080", nil)
 	}
 
