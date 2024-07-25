@@ -1,0 +1,42 @@
+package calc
+
+import (
+	"math/rand"
+
+	"../util"
+)
+
+type Object struct{
+	id int
+	Size           float64
+	X              float64
+	Y              float64
+	X_speed        float64
+	Y_speed        float64
+	X_acceleration float64
+	Y_acceleration float64
+	render        *bool
+	Mass           float64
+	Color          string
+}
+func (obj Object) Initialize() *Object {
+	obj.id=rand.Int()
+	if obj.Size == 0 {
+		obj.Size = 16
+	}
+	if obj.Mass == 0 {
+		obj.Mass = 1
+	}
+	if obj.render == nil {
+		obj.render = new(bool)
+		*obj.render = true
+	}
+	if obj.Color == "" {
+		obj.Color = "#ffff00"
+	}
+	if obj.Color == "rand" {
+		obj.Color=util.RndColor()
+
+	}
+	return &obj
+}
