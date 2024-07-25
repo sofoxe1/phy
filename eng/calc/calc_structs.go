@@ -2,9 +2,9 @@ package calc
 
 import (
 	"eng/util"
-	"math/rand"
+	"math"
 )
-
+var id int = 1
 type Object struct{
 	id int
 	Size           float64
@@ -19,7 +19,8 @@ type Object struct{
 	Color          string
 }
 func (obj Object) Initialize() *Object {
-	obj.id=rand.Int()
+	obj.id=int(math.Pow(2,float64(id)))
+	id++
 	if obj.Size == 0 {
 		obj.Size = 16
 	}

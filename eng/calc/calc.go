@@ -2,8 +2,8 @@ package calc
 
 import (
 	"eng/util"
-	"fmt"
 	"math"
+	"slices"
 )
 
 // https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
@@ -20,14 +20,17 @@ func colide(obj1 *Object, obj2 *Object) {
 	obj1.Ys = ((obj1.Mass-obj2.Mass)/(m_sum))*obj1.Ys + ((2*obj2.Mass)/(m_sum))*obj2.Ys
 	obj2.Ys = ((2*obj1.Mass)/(m_sum))*obj1.Ys + ((obj2.Mass-obj1.Mass)/(m_sum))*obj2.Ys
 }
-
+var collisions []int
 func checkCollisions(obj1 Object, objects []*Object) (*Object) {
 	for _, obj2 := range objects {
 		if obj1 == *obj2 {
 			continue
+		} else if slices.Contains(collisions,obj1.id+obj2.id){continue
 		}
 		if obj1.X+obj1.Size>obj2.X && obj1.X<obj2.X+obj2.Size && obj1.Y>obj2.Y-obj2.Size && obj1.Y<obj2.Y+obj2.Size {
+			// fmt.Println(collisions)
 			return obj2
+
 		}
 
 	}
@@ -60,10 +63,14 @@ func (obj *Object) update(time_step float64,fbx int, fby int, objects []*Object)
 	obj.Ys = obj.Ys + obj.Ya*time_step
 	obj.X = obj.X+((obj_c.Xs+obj.Xs)*time_step)/2
 	obj.Y = obj.Y+((obj_c.Ys+obj.Ys)*time_step)/2
+
+	//collision 'logic' below
 	if obj.X != obj_c.X || obj.Y!= obj_c.Y{
-		if obj2:= checkCollisions(*obj, objects); obj2!=nil{
-			obj.Color=util.RndColor()
-			fmt.Println(obj	)
+		for obj2:= checkCollisions(*obj, objects); obj2!=nil;obj2= checkCollisions(*obj, objects){
+			// if slices.Contains(collisions,obj.id+obj2.id){
+			// 	continue
+			// }
+			// fmt.Println("a")
 		x_travel:=obj.X-obj_c.X
 		y_travel:=obj.Y-obj_c.Y
 		path:= math.Sqrt(math.Pow(x_travel,2)+math.Pow(y_travel,2))
@@ -81,24 +88,20 @@ func (obj *Object) update(time_step float64,fbx int, fby int, objects []*Object)
 			dy=-obj.Y+obj2.Y-obj2.Size
 		}
 		if math.Abs(dx)<math.Abs(dy){
-			fmt.Println("a")
 			obj.X+=dx
 			obj.Y+=(dx*x_ratio)/y_ratio
 		} else{
 			obj.X+=(dy*y_ratio)/x_ratio
 			obj.Y+=dy
 		}
-		obj.stop()
-		if x_travel>0{
-			tx:= 2*x_travel/(obj_c.Xs+obj.Xs)
-			ty:= 2*y_travel/(obj_c.Ys+obj.Ys)
-			if ty!=tx{
-				panic("math is not mathing")
-			}
-
-		}
+		
+		collisions=append(collisions, obj.id+obj2.id)
+		// fmt.Println(collisions)
+		// fmt.Println(obj2)
+		colide(obj,obj2)
 
 	}
+	collisions= make([]int,1)
 	}
 	if !util.InsideScreen (int(obj.X)+int(obj.Size), int(obj.Y)+int(obj.Size),fbx,fby) || !util.InsideScreen(int(obj.X),int(obj.Y),fbx,fby){
 		obj.bounce()
