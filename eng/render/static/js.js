@@ -31,18 +31,16 @@ async function update_parameters() {
     await show_error(response)
 }
 
-async function lock() {
+async function update() {
     try {
 
         var img = document.getElementById('img');
-        const response = await fetch('lock');
-        await show_error(response)
-        img.src = 'dynamic/img.png?rand=' + Math.random(); //rand to prevent caching
+        img.src = '/img.png?rand=' + Math.random(); //rand to prevent caching
     } catch (err) {
         console.log(err);
     }
     finally {
-        setTimeout(lock, 10)
+        setTimeout(update, 30)
 
     }
 }
@@ -56,5 +54,5 @@ document.addEventListener("visibilitychange", (event) => {
     }
 });
 update_parameters()
-lock()
+update()
 
